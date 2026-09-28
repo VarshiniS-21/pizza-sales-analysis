@@ -1,0 +1,96 @@
+ PIZZA SALES QUERY 
+A. KPI 
+1. TOTAL REVENUE 
+select sum(total_price) as total_revenue
+from sales
+ANS : 817860.049999993
+
+2. AVERAGE ORDER REVENUE
+select sum(total_price)/ count (distinct order_id) as avg_order_revenue from sales
+ans : 38.307262295081635
+
+3. TOTAL PIZZA SOLD 
+ select sum(quantity) as total_pizza_sold from sales
+ans: 49574
+
+4. TOTAL ORDER
+ select count( distinct order_id) as total_order_placed from sales
+ans : 21350
+
+5. AVG PIZZAS PER ORDER
+ select cast( cast (sum(quantity) as decimal (10,2)) / cast(count(distinct order_id)as decimal(10,2))as decimal(10,2))as avg_pizzas_per_order from sales
+ans : 2.32
+
+6. PIZZA TREND PER DAY
+select to_char(ORDER_DATE, 'Day') AS "Day", count (distinct order_id) as count from sales
+group by "Day"
+ans 
+"Friday   "	3538
+"Monday   "	2794
+"Saturday "	3158
+"Sunday   "	2624
+"Thursday "	3239
+"Tuesday  "	2973
+"Wednesday"	3024
+
+7. HOUR TREND PER DAY
+SELECT date_part('hour', order_time) as hour, count (distinct order_id) as count from sales
+group by hour
+ans 
+9	1
+10	8
+11	1231
+12	2520
+13	2455
+14	1472
+15	1468
+16	1920
+17	2336
+18	2399
+19	2009
+20	1642
+21	1198
+22	663
+23	28
+
+ 8. percentage of pizza sales by category wise
+select pizza_category, sum(total_price)*100 / (select sum(total_price) from sales) as percentage
+from sales
+group by pizza_category
+order by percentage desc
+ans 
+"Classic"	26.9059602556699
+"Supreme"	25.45631126009884
+"Chicken"	23.955137556847493
+"Veggie"	23.682590927384783
+
+9. month wise
+select pizza_category, sum(total_price)*100 / (select sum(total_price) from sales where EXTRACT(MONTH FROM ORDER_DATE) = 02 ) as percentage
+from sales
+where EXTRACT(MONTH FROM ORDER_DATE) = 02
+group by pizza_category
+
+10. percentage of pizza sales by pissa size
+select pizza_size, sum(total_price) as total_sales, sum(total_price)*100 / (select sum(total_price) from sales) as percentage
+from sales
+group by pizza_size
+
+11. total pizza sales by category wise
+select pizza_category, sum(total_price)*100 / (select sum(total_price) from sales where EXTRACT(MONTH FROM ORDER_DATE) = 02 ) as percentage
+from sales
+where EXTRACT(MONTH FROM ORDER_DATE) = 02
+group by pizza_category
+
+12. highest/best selling pizza by name
+select pizza_name, sum(quantity) as total
+from sales
+group by pizza_name
+order by total desc
+limit 5
+
+13. lowest/worst selling pizza by name
+select pizza_name, sum(quantity) as total
+from sales
+group by pizza_name
+order by total 
+limit 5
